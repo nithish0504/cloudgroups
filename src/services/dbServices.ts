@@ -64,7 +64,7 @@ async function findManyByQuery<T>(
   let options = {
     projection: projection,
   };
-  return db.collection(collectionName).find(condition, options);
+  return db.collection(collectionName).find(condition, options).toArray();
 }
 
 async function updateOneById(

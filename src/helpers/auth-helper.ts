@@ -51,7 +51,6 @@ const getAuthBody = async (req: express.Request): Promise<AuthModel | null> => {
 const verifyToken = async (token: any): Promise<CommonResponseModel<any>> => {
   try {
     const payload = await verifier.verify(token);
-    Logger.info(payload);
     return {
       isSuccess: true,
       data: payload,

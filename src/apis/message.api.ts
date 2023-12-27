@@ -1,3 +1,4 @@
+import { editMessageRequestParamModel } from './../models/request/message.request.model';
 import { ApiResponse } from 'src/models/response/common.res.model';
 import { AuthHelper } from 'src/helpers/auth-helper';
 import * as express from 'express'
@@ -29,8 +30,9 @@ const addMessage =async (req:express.Request): Promise<ApiResponse<any>> => {
 const editMessage =async (req:express.Request): Promise<ApiResponse<any>>  => {
     let authPayload = await AuthHelper.getAuthBody(req);
     let reqbody = await Validator.validate<editMessageRequestModel>(req.body,MessageSchema.editMessageRequestSchema())
-    if (CommonUtils.isDefined(authPayload) && AuthHelper.isMessageSender(reqbody.messageId,authPayload.user._id.toString())) {
-        const editMessageResponse = await MessageService.editMessage(reqbody,reqbody.messageId)
+    let pathParams = await Validator.validate<editMessageRequestParamModel>(req.params,MessageSchema.editMessageRequestParamSchema())
+    if (CommonUtils.isDefined(authPayload) && AuthHelper.isMessageSender(pathParams.messageId,authPayload.user._id.toString())) {
+        const editMessageResponse = await MessageService.editMessage(reqbody,pathParams.messageId)
         if (editMessageResponse.isSuccess) {
             return ResponseTemplate.SuccessResponse("Successfully edited message",editMessageResponse.data)
         }

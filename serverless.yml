@@ -7,7 +7,7 @@ plugins:
     - serverless-iam-roles-per-function
     - serverless-disable-functions
 
-service: cloud-stocks
+service: cloud-groups
 
 custom:
   stage: ${opt:stage, 'dev'}
