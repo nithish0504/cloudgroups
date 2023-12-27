@@ -1,0 +1,146 @@
+plugins:
+    - serverless-offline-scheduler
+    - serverless-offline
+    - serverless-plugin-typescript
+    - serverless-tscpaths
+    - serverless-domain-manager
+    - serverless-iam-roles-per-function
+    - serverless-disable-functions
+
+service: cloud-stocks
+
+custom:
+  stage: ${opt:stage, 'dev'}
+  envFile: ${file(./env.${self:custom.stage}.json)}
+  cognitoUserPoolId: ${self:custom.envFile.USER_POOL_ID}
+  corsOrigin: ${self:custom.envFile.corsOrigin}
+  tscpaths:
+    buildpath: .build
+    tsconfigpath: tsconfig.json
+  enable-triggers:
+    dev: true
+  allow-headers:
+      - Content-Type
+      - Authorization
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  memorySize: 128
+  timeout: 20
+  logRetentionInDays: ${self:custom.envFile.logRetentionInDays}
+  versionFunctions: false
+  profile: serverless-cloud-stocks
+  region: ${self:custom.envFile.region}
+  stage: ${self:custom.stage}
+  deploymentBucket:
+    name: cloud-stocks
+    serverSideEncryption: AES256
+  environment:
+    databaseUrl: ${self:custom.envFile.MONGO_URI}
+    logLevel: ${self:custom.envFile.logLevel}
+    region: ${self:provider.region}
+    stage: ${self:provider.stage}
+    cognitoUserPoolId: ${self:custom.envFile.USER_POOL_ID}
+    cognitoClientId: ${self:custom.envFile.COGNITO_CLIENT_ID}
+    s3Region: ${self:custom.envFile.s3Region}
+    s3AccessKey: ${self:custom.envFile.s3AccessKey}
+    s3SecretAccessKey: ${self:custom.envFile.s3SecretAccessKey}
+    basePath: ${self:custom.envFile.basePath}
+    dbName: ${self:custom.envFile.dbName}
+    corsOrigin: ${self:custom.corsOrigin}
+
+
+functions:
+  getGroups:
+    handler: server.handler
+    events:
+      - http:
+          path: group/list
+          method: get
+  createGroup:
+    handler: server.handler
+    events:
+      - http:
+          path: group/create
+          method: post
+  addMembers:
+    handler: server.handler
+    events:
+      - http:
+          path: group/members/add
+          method: post
+  removeMembers:
+    handler: server.handler
+    events:
+      - http:
+          path: group/members/remove
+          method: post
+  deleteGroup:
+    handler: server.handler
+    events:
+      - http:
+          path: group/{groupId}
+          method: delete
+  getUsers:
+    handler: server.handler
+    events:
+      - http:
+          path: user
+          method: get
+  editUser:
+    handler: server.handler
+    events:
+      - http:
+          path: user/edit/{userId}
+          method: post
+  deleteUser:
+    handler: server.handler
+    events:
+      - http:
+          path: user/delete/{userId}
+          method: delete
+  getMessages:
+    handler: server.handler
+    events:
+      - http:
+          path: message/{groupId}/{pageNo}/{perPage}
+          method: get
+  searchGroups:
+    handler: server.handler
+    events:
+      - http:
+          path: group/search
+          method: get
+  addMessage:
+    handler: server.handler
+    events:
+      - http:
+          path: message/add
+          method: post
+  editMessage:
+    handler: server.handler
+    events:
+      - http:
+          path: message/{messageId}
+          method: put
+  likeMessage:
+    handler: server.handler
+    events:
+      - http:
+          path: message/like
+          method: post
+  unlikeMessage:
+    handler: server.handler
+    events:
+      - http:
+          path: message/unlike
+          method: post
+  deleteMessage:
+    handler: server.handler
+    events:
+      - http:
+          path: message/{messageId}
+          method: delete
+
+

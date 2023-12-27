@@ -1,0 +1,42 @@
+{
+  "extends": "./tsconfig.paths.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target":"ES6",
+    "lib": ["es6","dom"],
+    "moduleResolution": "node",
+    "rootDir": "./src",
+    "declaration": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "inlineSourceMap": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noImplicitThis": true,
+    "strictNullChecks": false,
+    "noImplicitReturns": true,
+    "preserveConstEnums": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedParameters": true,
+    "removeComments": true,
+    "sourceMap": false,
+    "baseUrl": "./",
+    "outDir": "lib"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "node_modules/**/*",
+    ".serverless/**/*",
+    ".webpack/**/*",
+    "_warmup/**/*",
+    ".vscode/**/*",
+    "build",
+    "webpack"
+  ],
+  "types":[
+    "typePatches"
+  ],
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
+}

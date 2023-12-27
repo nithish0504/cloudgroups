@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "src/*":[
+        "./src/*"
+      ],
+      "apis/*":[
+        "./src/apis/*"
+      ],
+      "models/*":[
+        "./src/models/*"
+      ],
+      "services/*":[
+        "./src/services/*"
+      ],
+      "routes/*":[
+        "./src/routes/*"
+      ],
+      "validations/*":[
+        "./src/validations/*"
+      ]
+    }
+  }
+}
