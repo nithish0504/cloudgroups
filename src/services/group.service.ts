@@ -7,6 +7,7 @@ import { DbQueryService } from "./dbServices";
 import { DbConfig } from "src/models/db-models/db-schema.model";
 import { ObjectId } from "mongodb";
 import { UserService } from "./user.service";
+import { Logger } from "src/helpers/logger";
 
 const createGroup =async (groupBody: createGroupRequestModel,userId: ObjectId): Promise<CommonResponseModel<any>> => {
 
@@ -91,9 +92,18 @@ const removeMembers = async (groupId: string, members: string[], userId:ObjectId
     }
 }
 
-const getGroups = async (userId: string) => {
-    let conditions = {
-        $or: [{ members: { $in: [userId] } }, { admins: { $in: [userId] } } ]
+const getGroups = async (userId: string, search: string) => {
+    let conditions: any = {
+        members: { $in: [userId] } 
+    }
+    // Logger.debug(search)
+    if(CommonUtils.isDefined(search)){
+        conditions = {
+            ...conditions,
+            $or: [
+                { name: { $regex: search, $options: 'i' } },
+            ]
+        }
     }
     let projections = {
         _id: 1,
@@ -103,10 +113,10 @@ const getGroups = async (userId: string) => {
         admins: 1,
     }
     const groups = await DbQueryService.findManyByQuery<GroupModel>(conditions, DbConfig.GroupCollection, projections)
-    groups.forEach(async (group:GroupModel) => {
-        group.members = await UserService.getUserNamesByIds(group.members);
-        group.admins = await UserService.getUserNamesByIds(group.admins);
-    })
+    for(let group of groups){
+        group.members = await UserService.getUserNamesByIds(group.members)
+        group.admins = await UserService.getUserNamesByIds(group.admins)
+    }
     return {
         isSuccess:true,
         data:groups

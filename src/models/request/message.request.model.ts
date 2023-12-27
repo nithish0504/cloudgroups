@@ -7,8 +7,10 @@ export interface addMessageRequestModel{
 
 export interface editMessageRequestModel{
     groupId: string
-    messageId: string
     message: string
+}
+export interface editMessageRequestParamModel{
+    messageId: string
 }
 
 export interface deleteMessageRequestModel{

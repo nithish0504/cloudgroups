@@ -83,7 +83,7 @@ const removeMembers = async (req:express.Request) => {
 const getGroups =async (req:express.Request): Promise<ApiResponse<any>> => {
     let authPayload: AuthModel = await AuthHelper.getAuthBody(req)
     if (CommonUtils.isDefined(authPayload)) {
-        const getGroupsResponse = await GroupService.getGroups(authPayload.user._id.toString())
+        const getGroupsResponse = await GroupService.getGroups(authPayload.user._id.toString(),req.query?.search?.toString())
         if (getGroupsResponse.isSuccess) {
             return ResponseTemplate.SuccessResponse("Successfully fetched groups",getGroupsResponse.data)
         }
